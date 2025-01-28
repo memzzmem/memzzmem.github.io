@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	<input type='button' value='send' onclick='send()'>
+    <script>
+        const socket = new WebSocket('ws://regular-pewter-mile.glitch.me:80'); // 替换为你的 Glitch 项目 URL
+
+        socket.onopen = function() {
+            alert('Connected to WebSocket server');
+        };
+
+        // 监听接收到的消息
+        socket.onmessage = () => {
+			alert('114514');
+		}
+
+		const send = () => socket.send('114514191919191919')
+    </script>
+</body>
+</html>
