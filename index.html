@@ -7,19 +7,29 @@
 <body>
     <div id='a'></div>
     <script>
+        while (!localStorage.getItem('key')) localStorage.setItem('key', prompt('Enter your key:'));
+        key = localStorage.getItem('key');
         const socket = new WebSocket('wss://regular-pewter-mile.glitch.me'); // 替换为你的 Glitch 项目 URL
         let count = 0;
+        
         window.onclick = () => count++;
-
+        
         socket.onopen = () => {
             document.getElementById('a').innerHTML = 'Connected to WebSocket server'
             setInterval(() => {
                 if (count >= 2) {
-                    socket.send('114514191919191919');
+                    socket.send(key);
                     count = 0;
-                    alert('ok');
                 }
             }, 1000);
+        }
+        
+        socket.onmessage = (e) => {
+            const reader = new FileReader;
+            reader.onload = () => {
+                if (reader.result == 'ok') alert('ok');
+            }
+            reader.readAsText(e.data);
         }
     </script>
 </body>
