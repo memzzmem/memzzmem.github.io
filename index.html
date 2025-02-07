@@ -5,23 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div id='a'></div>
+    <input type='button' value='send' id='a' onclick='send()' style='display:none'>
+
     <script>
         while (!localStorage.getItem('key')) localStorage.setItem('key', prompt('Enter your key:'));
-        key = localStorage.getItem('key');
+        const key = localStorage.getItem('key');
         const socket = new WebSocket('wss://regular-pewter-mile.glitch.me'); // 替换为你的 Glitch 项目 URL
-        let count = 0;
-        
-        window.onclick = () => count++;
-        
+        const send = () => socket.send(key);
         socket.onopen = () => {
-            document.getElementById('a').innerHTML = 'Connected to WebSocket server'
-            setInterval(() => {
-                if (count >= 2) {
-                    socket.send(key);
-                    count = 0;
-                }
-            }, 1000);
+            document.getElementById('a').style = '';
         }
         
         socket.onmessage = (e) => {
