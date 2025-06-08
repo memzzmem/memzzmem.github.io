@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--viewport-fit=cover:Fill the whole screen on iPhone X-->
+    <meta charset="utf-8" name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>(っ °Д °;)っ</title>
+  </head>
+
+  <body>
+    <noscript><strong style="color: #f00">此浏览器不支持JavaScript，该脚本无法运行。</strong></noscript>
+    <div class="index">
+      <div class="main">
+        <h1 class="title"></h1>
+        <p class="info"></p>
+        <p class="profile">上传谱面和资源文件或将其打包成zip然后上传；<br />读取完成后调节相关参数，最后点击“播放”按钮。<br />播放时双击画面：左上角暂停；右上角重新开始；右下角全屏。<br>长按播放加载皮肤；在曲名中输入/dl导出铺面；输入/random随机铺面；输入/pz加载PhiZone铺面</p>
+		<div id="uploader" class="disabled">
+          <input type="button" id="uploader-upload" value="上传"'/>
+          <div id="uploader-select">
+            <label id="uploader-file"'>上传文件</label>
+            <label id="uploader-dir"'>上传文件夹</label>
+          </div>
+        </div>
+        <input type="button" value="重置" onclick="cc()" />
+        <input type="button" value="清除缓存" onclick="wdnmd('update', Date.now()); location.reload(true)"/>
+        <input type="button" id="btn-docs" value="使用说明" />
+        <input type="button" id="btn-more" value="更多设置" />
+        <div id="select" class="disabled">
+          <div>谱面：<select id="select-chart" style="width: 6em"></select></div>
+          <div>音乐：<select id="select-bgm" style="width: 6em"></select></div>
+          <div>图片：<select id="select-bg" style="width: 6em"></select></div>
+          <br />
+          <div>
+            宽高比：<select id="select-aspect-ratio" style="width: 4em">
+              <option value="1.25">5:4</option>
+              <option value="1.333333">4:3</option>
+              <option value="1.4316546762589928">10:7</option>
+              <option value="1.461538">19:13</option>
+              <option value="1.6">8:5</option>
+              <option value="1.666667">5:3</option>
+              <option value="1.692308">22:13</option>
+              <option value="1.777778" selected>16:9</option>
+            </select>
+          </div>
+          <div>
+            按键缩放：<select id="select-note-scale" style="width: 4em">
+              <option value=".8">极小</option>
+              <option value=".9">较小</option>
+              <option value="1" selected>默认</option>
+              <option value="1.15">较大</option>
+              <option value="1.3">极大</option>
+            </select>
+          </div>
+          <div>
+            背景变暗：<select id="select-background-dim" style="width: 4em">
+              <option value="1">黑暗</option>
+              <option value=".8">昏暗</option>
+              <option value=".6" selected>默认</option>
+              <option value=".4">较亮</option>
+              <option value=".2">明亮</option>
+            </select>
+          </div>
+          <br />
+          <div>曲名：<input id="input-name" class="input" style="width: 7em"/></div>
+          <div>曲师：<input id="input-artist" class="input" style="width: 7em"/></div>
+          <br />
+          <div>曲绘：<input id="input-illustrator" class="input" style="width: 7em"/></div>
+          <div>谱师：<input id="input-charter" class="input" style="width: 7em"/></div>
+          <br />
+		  <div>难度：<input id="select-difficulty" class="input" style="width: 4em"/></div>
+          <div>等级：<input id="select-level" class="input" style="width: 4em"/></div>
+          <div>
+            音效音量：<select id="select-volume" style="width: 5em">
+              <option value="0">0%</option>
+              <option value=".25">25%</option>
+              <option value=".5">50%</option>
+              <option value="1" selected>100%</option>
+              <option value="2.5">250%</option>
+              <option value="5">500%</option>
+            </select>
+          </div>
+          <br />
+          <div><input type="checkbox" id="imageBlur" checked /><label for="imageBlur">背景模糊</label></div>
+		  <div><input type="checkbox" id="betterBlur" checked /><label for="betterBlur">更好的背景模糊</label></div>
+		  <div><input type="checkbox" id="fixBg"/><label for="fixBg">背景模糊修复</label></div>
+          <div><input type="checkbox" id="highLight" checked /><label for="highLight">多押高亮</label></div>
+          <br />
+		  <div><input type="checkbox" id="feedback" checked /><label for="feedback">触摸反馈</label></div>
+          <div><input type="checkbox" id="lineColor" checked /><label for="lineColor">FC/AP指示器</label></div>
+          <div class="disabled-when-playing"><input type="checkbox" id="autoplay" checked /><label for="autoplay">自动演示</label></div>
+          <div class="disabled-when-playing"><input type="checkbox" id="showTransition" checked /><label for="showTransition">过渡动画</label></div>
+          <br />
+          <div class="">
+            谱面镜像：<select id="select-flip" style="width: 4em">
+              <option value="0" selected>无</option>
+              <option value="1">X轴</option>
+              <option value="2">Y轴</option>
+              <option value="3">X&Y</option>
+            </select>
+          </div>
+          <div class="disabled-when-playing">
+            音乐变速：<select id="select-speed" style="width: 4em">
+			  <option value="">Reverse</option>
+              <option value="Slowest">极慢</option>
+              <option value="Slower">较慢</option>
+              <option value="" selected>正常</option>
+              <option value="Faster">较快</option>
+              <option value="Fastest">极快</option>
+			  <option>自定义</option>
+            </select>
+          </div>
+          <br />
+          <div class="disabled-when-playing">谱面延时(ms)：<input id="input-offset" type="number" step="5" class="input" style="width: 4em" placeholder="0" /></div>
+		  <div class="disabled-when-playing">开始时间(s)：<input id="st" style="width: 4em" value='0' onchange='startTime = Number(this.value)'></div><br>
+	    </div>
+        <div id="control" class="disabled">
+          <input type="button" id="btn-play" value="播放"/>
+          <input type="button" id="btn-pause" value="暂停" />
+	      <input type="button" value="全屏" onclick='as.func[3]()'>
+        </div>
+        <div><strong id="msg-out">初始化...</strong></div>
+        <div id="stage">
+          <i class="tl">&#xe034;</i>
+          <i class="tr">&#xe042;</i>
+          <i class="bl">&#xe8b8;</i>
+          <i class="br">&#xe5d0;</i>
+          <div id="mask">
+            <div id='tips'>GitHub: lchz&#104;3473/sim-phi</div>
+          </div>
+        </div>
+        <div id="cover-dark" class="cover-dark fade"></div>
+        <div id="cover-rmg" class="cover-view fade" qwq>
+          <div id="view-nav2" class="view-nav">
+            <a id="nav-rmg">资源管理</a>
+            <a id="nav-ext">扩展</a>
+          </div>
+          <div class="view-content">
+            <div id="view-rmg"></div>
+            <div id="view-ext"></div>
+          </div>
+        </div>
+        <div id="cover-view" class="cover-view fade" qwq>
+          <div id="view-nav" class="view-nav">
+            <a id="nav-cfg">更多设置</a>
+            <a id="nav-msg">日志</a>
+          </div>
+          <div class="view-content">
+            <div id="view-cfg"></div>
+            <div id="view-msg"></div>
+          </div>
+        </div>
+      </div>
+      <p class="footer">&copy;&nbsp;2020-2024&nbsp;lchz&#104;3473</p>
+        <div>
+			<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+			<div class="disabled-when-playing"><input type="checkbox" id="test" onclick='set(this.checked)'><label for="test">启用测试功能</label></div>
+			<div id='fuck'>
+				<div class="disabled-when-playing" style="display: inline-block;"><input type="checkbox" id="s" onclick='save = this.checked; reset();' checked><label for="s">开启存档</label></div>
+				<div id='byd' style="display: inline-block;"><input type="checkbox" id="as" onclick='autoSave = this.checked; reset();'><label for="as">自动存档</label></div>
+				<input type="checkbox" id="tc" onclick='timeChange = this.checked'><label for="tc">允许拖动进度条</label><br>
+				<input type="checkbox" id="hn" onclick='hideNote = this.checked'><label for="hn">隐藏note</label>
+				<input type="checkbox" id="hl" onclick='hideLine = this.checked'><label for="hl">隐藏判定线</label>
+				<input type="checkbox" id="hf" onclick='hitFX = this.checked'><label for="hf">开启打击特效</label>
+				<input type="checkbox" id="fm" onclick='fuckMode = this.checked'><label for="fm">???</label><br>
+				<input type="checkbox" id="hb" onclick='holdBroken = !this.checked'><label for="hb">防止Hold断开</label>
+				<input type="checkbox" id="nj" onclick='noJudge = this.checked'><label for="nj">禁用判定</label><br>
+				<div class="disabled-when-playing" style="display: inline-block">
+					将Perfect替换为：<select id="pr" style="width: 4em" onchange='perfectReplace = this.value'>
+						<option value="Perfect" selected>Perfect</option>
+						<option value="Good">Good</option>
+						<option value="Bad">Bad</option>
+						<option value="Miss">Miss</option>
+						<option value="none">无</option>
+					</select>
+					将Good替换为：<select id="gr" style="width: 4em" onchange='goodReplace = this.value'>
+						<option value="Good" selected>Good</option>
+						<option value="Perfect">Perfect</option>
+						<option value="Bad">Bad</option>
+						<option value="Miss">Miss</option>
+						<option value="none">无</option>
+					</select>
+					将Bad替换为：<select id="br" style="width: 4em" onchange='badReplace = this.value'>
+						<option value="Bad" selected>Bad</option>
+					<option value="Perfect">Perfect</option>
+						<option value="Good">Good</option>
+						<option value="Miss">Miss</option>
+						<option value="none">无</option>
+					</select>
+					将Miss替换为：<select id="mr" style="width: 4em" onchange='missReplace = this.value'>
+						<option value="Miss" selected>Miss</option>
+						<option value="Perfect">Perfect</option>
+						<option value="Good">Good</option>
+						<option value="Bad">Bad</option>
+						<option value="none">无</option>
+					</select><br>
+					铺面流速：x<input id="fs" style="width: 4em" value='1' onchange='fallSpeed = this.value'>
+					判定范围：x<input id="jw" style="width: 4em" value='1' onchange='judgeWidth = this.value * .118125'>
+					跳过判定时间：<input id="jt" style="width: 4em" value='.2' onchange='jumpTime = this.value'><br>
+					Perfect/Great判定区间：<input id="grl" style="width: 4em" value='-.04' onchange='greatLate = this.value'> - <input id="gre" style="width: 4em" value='.04' onchange='greatEarly = this.value'><br>
+					Perfect/Good判定区间：<input id="gl" style="width: 4em" value='-.08' onchange='goodLate = this.value'> - <input id="ge" style="width: 4em" value='.08' onchange='goodEarly = this.value'><br>
+					Bad/Miss判定区间：<input id="bl" style="width: 4em" value='-.16' onchange='badLate = this.value'> - <input id="be" style="width: 4em" value='.16' onchange='badEarly = this.value'><br>
+				</div>
+				<div>
+					Perfect得分倍率：<input id="ps" style="width: 4em" value='.9' onchange='perfectScore = this.value'>
+					Great得分倍率：<input id="grs" style="width: 4em" value='.9' onchange='greatScore = this.value'><br>
+					Good得分倍率：<input id="gs" style="width: 4em" value='.585' onchange='goodScore = this.value'>
+					Bad得分倍率：<input id="bs" style="width: 4em" value='0' onchange='badScore = this.value'><br>
+					Miss得分倍率：<input id="ms" style="width: 4em" value='0' onchange='missScore = this.value'>
+					Combo得分倍率：<input id="cs" style="width: 4em" value='.1' onchange='comboScore = this.value'><br>
+				</div>
+				将Tap替换为：<select id="tr" style="width: 4em" onchange='tapReplace = this.value'>
+					<option value="1" selected>Tap</option>
+					<option value="3">Hold</option>
+					<option value="2">Drag</option>
+					<option value="4">Filck</option>
+					<option value="random">Random</option>
+				</select>
+				将Hold替换为：<select id="hr" style="width: 4em" onchange='holdReplace = this.value'>
+					<option value="1">Tap</option>
+					<option value="3" selected>Hold</option>
+					<option value="2">Drag</option>
+					<option value="4">Filck</option>
+					<option value="random">Random</option>
+				</select><br>
+				将Drag替换为：<select id="dr" style="width: 4em" onchange='dragReplace = this.value'>
+					<option value="1">Tap</option>
+					<option value="3">Hold</option>
+					<option value="2" selected>Drag</option>
+					<option value="4">Filck</option>
+					<option value="random">Random</option>
+				</select>
+				将Flick替换为：<select id="fr" style="width: 4em" onchange='flickReplace = this.value'>
+					<option value="1">Tap</option>
+					<option value="3">Hold</option>
+					<option value="2">Drag</option>
+					<option value="4" selected>Filck</option>
+					<option value="random">Random</option>
+				</select><br>
+				铺面随机：Tap：<input id="t" style="width: 4em" value='25' onchange='tap = Number(this.value)'>
+				Drag：<input id="d" style="width: 4em" value='25' onchange='drag = Number(this.value)'><br>
+				Hold：<input id="h" style="width: 4em" value='25' onchange='hold = Number(this.value)'>
+				Flick：<input id="f" style="width: 4em" value='25' onchange='flick = Number(this.value)'><br>
+				Websocket:<input id="ws" onchange="wdnmd('ws', this.value);"><input type="button" value="连接" onclick="connect(ge('ws').value)">
+			</div>
+        </div>
+        <script>
+            self.wdnmd = (name, value) => localStorage.setItem(name, value);
+            self.read = name => localStorage.getItem(name);
+			self.ver = '1.0.0';
+			self.update = read("update");
+			if (!update) {
+			    update = ver;
+			    wdnmd("update", update);
+			}
+			const ge = e => document.getElementById(e);
+			const set = (test) => {
+				self.test = test;
+				if (!test) {
+					self.startTime = 0; ge('st').value = 0;
+					self.fallSpeed = 1; ge('fs').value = 1;
+					self.fuckMode = false; ge('fm').checked = false;
+					self.hideLine = false; ge('hl').checked = false;
+					self.hideNote = false; ge('hn').checked = false;
+					self.noJudge = false; ge('nj').checked = false;
+					self.timeChange = false; ge('tc').checked = false;
+					self.hitFX = true; ge('hf').checked = true;
+					self.holdBroken = !false; ge('hb').checked = false;
+					self.save = false; ge('s').checked = false;
+					self.autoSave = false; ge("as").checked = false;
+					self.judgeWidth = .118125; ge('jw').value = .118125;
+					self.goodEarly = .08; ge('ge').value = .08;
+					self.goodLate = -.08; ge('gl').value = -.08;
+					self.greatEarly = .04; ge('gre').value = .04;
+					self.greatLate = -.04; ge('grl').value = -.04;
+					self.badEarly = .16; ge('be').value = .16;
+					self.badLate = -.16; ge('bl').value = -.16;
+					self.jumpTime = .2; ge('jt').value = .2;
+					self.comboScore = .1; ge('cs').value = .1;
+					self.perfectScore = .9; ge('ps').value = .9;
+					self.greatScore = .9; ge('grs').value = .9;
+					self.goodScore = .585; ge('gs').value = .585;
+					self.badScore = 0; ge('bs').value = 0;
+					self.missScore = 0; ge('ms').value = 0;
+					self.tap = 25; ge('t').value = 25;
+					self.hold = 25; ge('h').value = 25;
+					self.flick = 25; ge('f').value = 25;
+					self.drag = 25; ge('d').value = 25;
+					self.perfectReplace = "Perfect"; ge('pr').selectedIndex = 0;
+					self.goodReplace = "Good"; ge('gr').selectedIndex = 0;
+					self.badReplace = "Bad"; ge('br').selectedIndex = 0;
+					self.missReplace = "miss"; ge('mr').selectedIndex = 0;
+					self.tapReplace = '1'; ge('tr').selectedIndex = 0;
+					self.holdReplace = '3'; ge('hr').selectedIndex = 1;
+					self.dragReplace = '2'; ge('dr').selectedIndex = 2;
+					self.flickReplace = '4'; ge('fr').selectedIndex = 3;
+					ge('fuck').classList.add('hide');
+				} else {
+					ge('fuck').classList.remove('hide');
+				}
+			}
+			set(!1);
+			if (read("ws")) ge("ws").value = read("ws");
+			else ge("ws").value = "ws://192.168.";
+			const reset = () => {
+				if (save) ge('byd').classList.remove('disabled');
+				else {
+					ge('byd').classList.add('disabled');
+					ge('as').checked = false;
+					autoSave = false;
+				}
+				self.addCombo = [];
+				self.saveData = {
+			        time: 0,
+					addCombo: []
+			    }
+			}
+			reset();
+			const createElement = (type, options = {}, func) => {
+				const element = document.createElement(type);
+				for (const i in options) if (options.hasOwnProperty(i)) element.setAttribute(i, options[i]);
+				if (func) element.onload = () => func();
+				document.head.appendChild(element);
+			}
+			const cc = () => {
+			    for (const i of ["select-chart", "select-bg", "select-bgm"]) {
+			        const a = ge(i);
+			        a.length = 0;
+				    a.dispatchEvent(new Event('change'));
+			    }
+				for (const i of ["input-name", "input-artist", "input-illustrator", "input-charter", "select-difficulty", "select-level"]) ge(i).value = "";
+				ge("control").classList.add("disabled");
+			}
+        </script>
+    </div>
+	<script>
+		if ('serviceWorker' in navigator) {
+		    navigator.serviceWorker.register(`./js/lib/service-worker.js?ver=&{update}`).then(() => {
+		        console.log('Service Worker Registered');
+		    });
+		}
+		
+		createElement('script', {src: `https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/js/lib/eruda.js?ver=${update}`});
+		createElement('script', {src: `https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/js/aff2phi.js?ver=${update}`});
+		createElement('script', {src: `https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/js/lib/stackblur-canvas.js?ver=${update}`});
+		createElement('script', {src: `https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/js/main.js?ver=${update}`}, () => createElement('script', {src: `https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/js/index.js?ver=${update}`,type: 'module'}));
+		createElement('link', {rel: 'shortcut icon',href: `https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/src/image/icon.svg?$ver={update}`});
+		createElement('link', {rel: 'manifest',href: `./manifest.json?ver=${update}`});
+		createElement('link', {rel: 'stylesheet',href: `https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/style.css?ver=${update}`});
+		self.onload = () => {
+			const plugins = ['phizone.js', 'tips.js', 'filter.js', 'skin.js', 'export.js', 'gauge.js', 'dynamic-score.js', 'video-recorder.js', 'online.js'];
+			for (const plugin of plugins) gt.use(import(`https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/js/${plugin}?ver=${update}`));
+			import(`https://memzzmem.oss-cn-beijing.aliyuncs.com/PhiEX/js/demo.js?ver=${update}`).then((e => e.default(Kt)));
+		}
+    </script>
+  </body>
+</html>
